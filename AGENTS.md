@@ -1,4 +1,8 @@
-# 项目上下文
+# AGENTS.md — 项目规范
+
+## 项目概览
+
+人工智能训练师五级零基础练习与考试系统。服务三类用户：零基础学员、教师、超级管理员。
 
 ### 版本技术栈
 
@@ -7,59 +11,123 @@
 - **Language**: TypeScript 5
 - **UI 组件**: shadcn/ui (基于 Radix UI)
 - **Styling**: Tailwind CSS 4
+- **Database**: Supabase PostgreSQL + RLS
+- **Auth**: Supabase Auth (email/password)
+- **Toast**: sonner (not useToast)
 
 ## 目录结构
 
 ```
-├── public/                 # 静态资源
-├── scripts/                # 构建与启动脚本
-│   ├── build.sh            # 构建脚本
-│   ├── dev.sh              # 开发环境启动脚本
-│   ├── prepare.sh          # 预处理脚本
-│   └── start.sh            # 生产环境启动脚本
+├── public/                     # 静态资源
+├── scripts/db/                 # 数据库种子脚本
+│   ├── seed-core.mts           # 组织/班级/用户种子
+│   ├── seed-questions.mts      # 题库导入脚本
+│   └── seed-tasks.mts          # 实操任务模板种子
 ├── src/
-│   ├── app/                # 页面路由与布局
-│   ├── components/ui/      # Shadcn UI 组件库
-│   ├── hooks/              # 自定义 Hooks
-│   ├── lib/                # 工具库
-│   │   └── utils.ts        # 通用工具函数 (cn)
-│   └── server.ts           # 自定义服务端入口
-├── next.config.ts          # Next.js 配置
-├── package.json            # 项目依赖管理
-└── tsconfig.json           # TypeScript 配置
+│   ├── app/                    # 页面路由与布局
+│   │   ├── admin/              # 管理员端
+│   │   ├── api/                # API 路由
+│   │   │   ├── admin/          # 管理员 API
+│   │   │   ├── auth/           # 认证 API
+│   │   │   ├── student/        # 学员 API
+│   │   │   ├── teacher/        # 教师 API
+│   │   │   └── supabase-config/ # Supabase 配置
+│   │   ├── login/              # 登录页
+│   │   └── student/            # 学员端
+│   │       ├── exams/          # 考试列表+答题
+│   │       ├── home/           # 学员首页
+│   │       ├── practice/       # 理论练习
+│   │       ├── results/        # 成绩查询
+│   │       ├── task/           # 实操任务
+│   │       └── wrong/          # 错题本
+│   ├── components/ui/          # Shadcn UI 组件库
+│   ├── components/             # 业务组件
+│   │   ├── app-shell.tsx       # 角色识别 Shell
+│   │   ├── role-layout.tsx     # 通用角色布局
+│   │   └── student-topbar.tsx  # 学员顶栏
+│   ├── hooks/                  # 自定义 Hooks
+│   ├── lib/                    # 工具库
+│   │   ├── api.ts              # ok()/fail() 响应助手
+│   │   ├── session-client.ts   # apiFetch (带 auth header)
+│   │   └── utils.ts            # cn() 等
+│   ├── server/                 # 服务端逻辑
+│   │   ├── auth.ts             # 认证: getSessionUser/requireUser/requireRole
+│   │   ├── database.ts         # dbQuery<T>/dbExec
+│   │   ├── docx-importer.ts    # DOCX 题库导入解析
+│   │   ├── grading/            # 12个评分器 + gradeByType 统一入口
+│   │   ├── question-bank.ts    # 题库 CRUD (VIEW读/实际表写)
+│   │   └── users.ts            # 用户管理
+│   └── storage/                # 存储层
+│       └── database/
+│           └── supabase-client.ts  # Supabase 客户端
+├── next.config.ts
+├── package.json
+└── tsconfig.json
 ```
 
-- 项目文件（如 app 目录、pages 目录、components 等）默认初始化到 `src/` 目录下。
+## 构建和测试命令
 
-## 包管理规范
+```bash
+pnpm install          # 安装依赖
+pnpm lint --quiet     # ESLint 检查
+pnpm ts-check         # TypeScript 类型检查
+pnpm run dev          # 开发启动 (端口 5000)
+pnpm run build        # 生产构建
+```
 
-**仅允许使用 pnpm** 作为包管理器，**严禁使用 npm 或 yarn**。
-**常用命令**：
-- 安装依赖：`pnpm add <package>`
-- 安装开发依赖：`pnpm add -D <package>`
-- 安装所有依赖：`pnpm install`
-- 移除依赖：`pnpm remove <package>`
+## 关键约定
 
-## 开发规范
+### 数据库
 
-### 编码规范
+- **dbQuery\<T\>(sql, ...params)**: 返回 `T[]`（展开参数，非数组）
+- **dbExec(sql, ...params)**: 返回 `number`（rowCount）
+- 题库读用 `question_items` VIEW（UNION practice + exam），写操作路由到实际表
+- `SessionUser.roles` 是数组（非 `.role` 单值）
+- `profiles.id` 即用户 ID（无 `user_id` 列）
+- `enrollments.user_id`（非 `student_id`）
+- `exam_schedules` 的时间列是 `exam_start_at`/`exam_end_at`（非 open/close）
+- 角色类型: `'super_admin'`|`'org_admin'`|`'teacher'`|`'student'`|`'question_editor'`|`'question_reviewer'`
 
-- 默认按 TypeScript `strict` 心智写代码；优先复用当前作用域已声明的变量、函数、类型和导入，禁止引用未声明标识符或拼错变量名。
-- 禁止隐式 `any` 和 `as any`；函数参数、返回值、解构项、事件对象、`catch` 错误在使用前应有明确类型或先完成类型收窄，并清理未使用的变量和导入。
+### API 响应
 
-### next.config 配置规范
+- `ok(data)` → `Response.json({ success: true, data })`
+- `fail(status, message)` → **status 在前**, message 在后
 
-- 配置的路径不要写死绝对路径，必须使用 path.resolve(__dirname, ...)、import.meta.dirname 或 process.cwd() 动态拼接。
+### 前端
 
-### Hydration 问题防范
+- 使用 `apiFetch(path, options)` 自动带 Authorization header
+- Toast 使用 `import { toast } from 'sonner'`
+- 学员页面用 `'use client'` + `useEffect`/`useState` 防 hydration 错误
+- 禁止 JSX 中直接用 `Date.now()`/`Math.random()`
 
-1. 严禁在 JSX 渲染逻辑中直接使用 typeof window、Date.now()、Math.random() 等动态数据。**必须使用 'use client' 并配合 useEffect + useState 确保动态内容仅在客户端挂载后渲染**；同时严禁非法 HTML 嵌套（如 <p> 嵌套 <div>）。
-2. **禁止使用 head 标签**，优先使用 metadata，详见文档：https://nextjs.org/docs/app/api-reference/functions/generate-metadata
-   1. 三方 CSS、字体等资源可在 `globals.css` 中顶部通过 `@import` 引入或使用 next/font
-   2. preload, preconnect, dns-prefetch 通过 ReactDOM 的 preload、preconnect、dns-prefetch 方法引入
-   3. json-ld 可阅读 https://nextjs.org/docs/app/guides/json-ld
+### 评分引擎
 
-## UI 设计与组件规范 (UI & Styling Standards)
+- 12 个纯函数评分器: singleChoice, trueFalse, excelDeleteRows, statsTableFill, fileClassification, imageCleaning, imageAnnotation, textSentiment, audioTranscription, dataComparison, labelConsistency, modelEvaluation
+- 统一入口: `gradeByType(type, submission, answerKey)`
 
-- 模板默认预装核心组件库 `shadcn/ui`，位于`src/components/ui/`目录下
-- Next.js 项目**必须默认**采用 shadcn/ui 组件、风格和规范，**除非用户指定用其他的组件和规范。**
+## 编码规范
+
+- TypeScript strict 模式，禁止隐式 any / as any
+- 函数参数、返回值必须有类型标注
+- 中文标点仅出现在中文字符串内容中，代码标点一律半角
+- 禁止使用 `@/hooks/use-toast`（不存在），用 sonner
+
+## 设计规范
+
+详见 DESIGN.md — 核心要点:
+- 墨青绿主色、暖白纸背景、18px 学员正文字号
+- 状态绝不只用颜色表达：必须图标+文字
+- 练习反馈温和鼓励("✓ 做对了！", "✗ 答错了，没关系")
+- 考试模式克制严肃
+- 禁止科技蓝+蓝紫渐变、小于14px正文、纯图标关键按钮
+
+## 测试账号
+
+| 角色 | 邮箱 | 密码 |
+|------|------|------|
+| 超级管理员 | admin@exam.local | Admin@2026 |
+| 教师 | teacher01@exam.local | abcd2345 |
+| 学员 | stu001@student.exam.local | abcd2345 |
+| 学员 | stu002@student.exam.local | abcd2345 |
+| 题库编辑 | editor01@exam.local | abcd2345 |
+| 题库审核 | reviewer01@exam.local | abcd2345 |
