@@ -105,6 +105,51 @@ pnpm run build        # 生产构建
 - 12 个纯函数评分器: singleChoice, trueFalse, excelDeleteRows, statsTableFill, fileClassification, imageCleaning, imageAnnotation, textSentiment, audioTranscription, dataComparison, labelConsistency, modelEvaluation
 - 统一入口: `gradeByType(type, submission, answerKey)`
 
+### API 端点清单
+
+**认证**
+- `POST /api/auth/session` - 登录(返回accessToken+user)
+- `GET /api/auth/session` - 获取当前用户
+
+**学员端**
+- `GET /api/student/home` - 学员首页统计
+- `GET /api/student/practice/questions` - 练习题目列表
+- `POST /api/student/practice/check` - 提交答案判分
+- `GET /api/student/practice/wrong` - 错题本
+- `GET /api/student/practice/task` - 实操任务列表
+- `POST /api/student/practice/submit` - 提交实操任务
+- `GET /api/student/exams` - 可参加的考试列表
+- `POST /api/student/exams/start` - 开始考试(创建attempt)
+- `GET /api/student/exams/questions` - 获取试卷题目
+- `POST /api/student/exams/submit` - 交卷(含服务端时间锁)
+- `GET /api/student/results` - 成绩查询
+
+**教师端**
+- `GET /api/teacher/dashboard` - 教师仪表盘
+- `GET /api/teacher/exams` - 考试列表
+- `POST /api/teacher/exams` - 创建考试
+- `GET /api/teacher/students` - 学员列表
+
+**管理端**
+- `GET /api/admin/stats` - 系统统计
+- `GET /api/admin/users` - 用户管理
+- `GET /api/admin/organizations` - 组织列表
+- `GET /api/admin/cohorts` - 班级列表
+- `GET/POST /api/admin/exam-schedules` - 考试安排
+- `GET/POST /api/admin/papers` - 试卷管理
+- `GET /api/admin/results` - 成绩列表
+- `GET/PATCH /api/admin/scores/review` - 成绩复核(查详情+调整)
+- `POST /api/admin/scores/publish` - 发布成绩
+- `POST /api/admin/media/generate-image` - AI图片生成
+- `POST /api/admin/media/generate-audio` - TTS音频生成
+
+### 考试时间锁
+
+- 开始考试时服务端校验 `exam_start_at <= NOW()`
+- 交卷时服务端校验 `NOW() <= exam_end_at`，超时自动判为 `expired`
+- 客户端倒计时到期自动提交
+- 成绩复核支持调整分数、通过/不通过标记、发布
+
 ## 编码规范
 
 - TypeScript strict 模式，禁止隐式 any / as any
