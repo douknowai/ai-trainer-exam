@@ -175,8 +175,9 @@ pnpm run build        # 生产构建
 | 角色 | 邮箱 | 密码 |
 |------|------|------|
 | 超级管理员 | admin@exam.local | Admin@2026 |
-| 教师 | teacher01@exam.local | abcd2345 |
+| 学校管理员 | school@exam.local | School@2026 |
+| 教师 | teacher01@exam.local | Teacher@2026 |
 | 学员 | stu001@student.exam.local | abcd2345 |
-| 学员 | stu002@student.exam.local | abcd2345 |
-| 题库编辑 | editor01@exam.local | abcd2345 |
-| 题库审核 | reviewer01@exam.local | abcd2345 |
+| 学员 | stu002@student.exam.local | efgh6789 |
+| 题库编辑 | editor01@exam.local | Editor@2026 |
+| 题库审核 | reviewer01@exam.local | Review@2026 |
