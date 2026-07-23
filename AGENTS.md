@@ -52,7 +52,8 @@
 │   │   └── utils.ts            # cn() 等
 │   ├── server/                 # 服务端逻辑
 │   │   ├── auth.ts             # 认证: getSessionUser/requireUser/requireRole
-│   │   ├── database.ts         # dbQuery<T>/dbExec
+│   │   ├── audit.ts            # 审计日志: insertAudit/bulkInsertAudit
+│   │   ├── db.ts                # dbQuery<T>/dbExec/dbOne/dbTx/dbNow
 │   │   ├── docx-importer.ts    # DOCX 题库导入解析
 │   │   ├── grading/            # 12个评分器 + gradeByType 统一入口
 │   │   ├── question-bank.ts    # 题库 CRUD (VIEW读/实际表写)
@@ -86,7 +87,7 @@ pnpm run build        # 生产构建
 - `profiles.id` 即用户 ID（无 `user_id` 列）
 - `enrollments.user_id`（非 `student_id`）
 - `exam_schedules` 的时间列是 `exam_start_at`/`exam_end_at`（非 open/close）
-- 角色类型: `'super_admin'`|`'org_admin'`|`'teacher'`|`'student'`|`'question_editor'`|`'question_reviewer'`
+- 角色类型: `'super_admin'`|`'school_admin'`|`'teacher'`|`'question_editor'`|`'question_reviewer'`|`'invigilator'`|`'student'`|`'auditor'`
 
 ### API 响应
 
@@ -142,6 +143,9 @@ pnpm run build        # 生产构建
 - `POST /api/admin/scores/publish` - 发布成绩
 - `POST /api/admin/media/generate-image` - AI图片生成
 - `POST /api/admin/media/generate-audio` - TTS音频生成
+- `GET /api/admin/reports/overview` - 报表概览(成绩分布/考试通过率/班级对比/薄弱题型)
+- `GET /api/admin/audit-logs` - 审计日志(分页+过滤)
+- `GET/PATCH /api/admin/settings` - 系统设置(获取/更新配置项)
 
 ### 考试时间锁
 
