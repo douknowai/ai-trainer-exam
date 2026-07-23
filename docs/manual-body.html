@@ -1,0 +1,501 @@
+<!-- COVER -->
+<div class="cover">
+  <div class="logo-area"><span>AI</span></div>
+  <div class="divider"></div>
+  <h1>人工智能训练师五级<br>零基础练习与考试系统</h1>
+  <div class="subtitle">使 用 说 明 书</div>
+  <div class="version-badge">Version 1.0</div>
+  <div class="date">2026 年 7 月</div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <h2>目 录</h2>
+  <ol>
+    <li>系统简介
+      <ol><li>产品定位</li><li>系统角色与职责</li><li>技术架构</li><li>设计理念</li></ol>
+    </li>
+    <li>系统环境与要求
+      <ol><li>浏览器要求</li><li>屏幕分辨率</li><li>网络要求</li></ol>
+    </li>
+    <li>快速开始
+      <ol><li>访问系统</li><li>登录与退出</li><li>测试账号一览</li></ol>
+    </li>
+    <li>学员操作指南
+      <ol><li>学员首页</li><li>理论练习</li><li>实操任务（7 种题型）</li><li>正式考试（完整流程）</li><li>成绩查询</li><li>错题本</li><li>帮助中心</li></ol>
+    </li>
+    <li>教师操作指南
+      <ol><li>教师仪表盘</li><li>考试管理</li><li>学员管理</li><li>教学建议</li></ol>
+    </li>
+    <li>管理员操作指南
+      <ol><li>管理首页与数据概览</li><li>用户管理（含角色权限矩阵）</li><li>组织与班级管理</li><li>考试安排</li><li>试卷管理</li><li>成绩管理与复核流程</li><li>考试实时监控</li><li>数据报表与分析</li><li>系统设置（参数说明）</li><li>审计日志</li><li>媒体素材工坊</li><li>题库管理</li></ol>
+    </li>
+    <li>安全与合规
+      <ol><li>数据安全</li><li>考试防作弊机制</li><li>用户隐私保护</li></ol>
+    </li>
+    <li>故障排查与常见问题</li>
+    <li>附录
+      <ol><li>术语表</li><li>版本历史</li></ol>
+    </li>
+  </ol>
+</div>
+
+<!-- CH1 -->
+<h2 class="ch">第一章　系统简介</h2>
+<h3>1.1 产品定位</h3>
+<p>本系统是面向<strong>人工智能训练师五级职业资格认证</strong>的在线练习与考试平台，服务于职业培训学校的教学全流程。系统覆盖从题库管理、日常练习、实操训练到正式考试、成绩发布、数据分析的完整业务链路。</p>
+
+<h3>1.2 系统角色与职责</h3>
+<table class="d"><thead><tr><th>角色</th><th>标识</th><th>核心职责</th></tr></thead><tbody>
+<tr><td>学员</td><td>student</td><td>参加理论练习、实操任务、正式考试，查看成绩与错题</td></tr>
+<tr><td>教师</td><td>teacher</td><td>查看班级学员情况，管理考试安排，跟进学习进度</td></tr>
+<tr><td>超级管理员</td><td>super_admin</td><td>管理用户/组织/班级/题库/考试/成绩/系统配置</td></tr>
+<tr><td>学校管理员</td><td>school_admin</td><td>本组织范围内的管理功能</td></tr>
+<tr><td>题库编辑</td><td>question_editor</td><td>创建和编辑题目，提交审核</td></tr>
+<tr><td>题库审核</td><td>question_reviewer</td><td>审核题目，批准或驳回</td></tr>
+<tr><td>监考员</td><td>invigilator</td><td>监控考试进行状态</td></tr>
+<tr><td>审计员</td><td>auditor</td><td>查看审计日志</td></tr>
+</tbody></table>
+
+<h3>1.3 技术架构</h3>
+<table class="d"><thead><tr><th>层级</th><th>技术选型</th><th>说明</th></tr></thead><tbody>
+<tr><td>前端框架</td><td>Next.js 16 (App Router) + React 19</td><td>服务端渲染 + 客户端交互</td></tr>
+<tr><td>编程语言</td><td>TypeScript 5</td><td>类型安全，减少运行时错误</td></tr>
+<tr><td>UI 组件</td><td>shadcn/ui (Radix UI) + Tailwind CSS 4</td><td>无障碍组件 + 原子化样式</td></tr>
+<tr><td>后端</td><td>Next.js API Routes</td><td>无需独立后端服务，一体化部署</td></tr>
+<tr><td>数据库</td><td>Supabase PostgreSQL</td><td>支持行级安全策略 (RLS)</td></tr>
+<tr><td>认证</td><td>Supabase Auth (邮箱/密码)</td><td>JWT Token 认证</td></tr>
+<tr><td>AI 服务</td><td>coze-coding-dev-sdk</td><td>AI 图片生成、TTS 音频合成</td></tr>
+</tbody></table>
+
+<h3>1.4 设计理念</h3>
+<p>系统遵循<strong>"零基础友好"</strong>原则：</p>
+<ul>
+<li><strong>大字号、大按钮、大点击区域</strong>：学员正文 18px，主按钮文字 18px，最小正文 14px</li>
+<li><strong>每步操作有反馈</strong>：答题后立即显示"做对了！"或"答错了，没关系"等温和提示</li>
+<li><strong>状态绝不只用颜色表达</strong>：必须图标 + 文字双重标识</li>
+<li><strong>练习温和、考试严肃</strong>：两种模式视觉风格截然不同</li>
+<li><strong>禁止专业术语直出</strong>：错误提示必须说明"哪里错、怎么改"</li>
+</ul>
+<div class="tip"><b>提示</b>系统配色以墨青绿为主色（源自教室护眼黑板），暖白纸为背景，营造稳重可信赖的氛围。</div>
+
+<!-- CH2 -->
+<h2 class="ch">第二章　系统环境与要求</h2>
+<h3>2.1 浏览器要求</h3>
+<table class="d"><thead><tr><th>浏览器</th><th>最低版本</th><th>推荐度</th></tr></thead><tbody>
+<tr><td>Google Chrome</td><td>100+</td><td>强烈推荐</td></tr>
+<tr><td>Microsoft Edge</td><td>100+</td><td>推荐</td></tr>
+<tr><td>Mozilla Firefox</td><td>100+</td><td>推荐</td></tr>
+<tr><td>Safari</td><td>15+</td><td>可用</td></tr>
+<tr><td>Internet Explorer</td><td>-</td><td>不支持</td></tr>
+</tbody></table>
+<div class="warn"><b>注意</b>培训机房如使用旧版浏览器，请确保版本不低于上述要求。系统依赖现代 Web 技术，旧版浏览器可能出现排版错乱或功能异常。</div>
+
+<h3>2.2 屏幕分辨率</h3>
+<table class="d"><thead><tr><th>场景</th><th>最低分辨率</th><th>推荐分辨率</th></tr></thead><tbody>
+<tr><td>学员考试/实操</td><td>1366x768</td><td>1920x1080</td></tr>
+<tr><td>管理端操作</td><td>1366x768</td><td>1920x1080</td></tr>
+<tr><td>手机查看成绩</td><td>375x667</td><td>414x896</td></tr>
+</tbody></table>
+
+<h3>2.3 网络要求</h3>
+<ul>
+<li><strong>带宽</strong>：建议不低于 2 Mbps</li>
+<li><strong>稳定性</strong>：考试期间请确保网络稳定。断网后系统会自动恢复答题进度</li>
+<li><strong>WebSocket</strong>：实时功能（如考试倒计时）依赖 WebSocket 协议</li>
+</ul>
+
+<!-- CH3 -->
+<h2 class="ch">第三章　快速开始</h2>
+<h3>3.1 访问系统</h3>
+<p>在浏览器地址栏中输入系统访问地址，按回车键进入登录页面。建议将地址添加到浏览器书签。</p>
+
+<h3>3.2 登录与退出</h3>
+<h4>登录</h4>
+<ol>
+<li>在登录页面输入<strong>邮箱地址</strong>和<strong>密码</strong></li>
+<li>点击"登录"按钮</li>
+<li>系统验证成功后，自动跳转到对应角色的工作台</li>
+</ol>
+<div class="warn"><b>注意</b>连续多次输入错误密码可能导致账号被临时锁定。如忘记密码，请联系系统管理员重置。</div>
+<h4>退出</h4>
+<ol>
+<li>点击页面右上角的用户头像/姓名</li>
+<li>选择"退出登录"</li>
+<li>系统返回登录页面</li>
+</ol>
+<div class="tip"><b>提示</b>系统默认在无操作 120 分钟后自动登出（管理员可在系统设置中调整）。考试期间不受此限制。</div>
+
+<h3>3.3 测试账号一览</h3>
+<table class="d"><thead><tr><th>角色</th><th>邮箱</th><th>密码</th><th>说明</th></tr></thead><tbody>
+<tr><td>超级管理员</td><td>admin@exam.local</td><td>Admin@2026</td><td>全部管理权限</td></tr>
+<tr><td>学校管理员</td><td>school@exam.local</td><td>School@2026</td><td>本组织管理权限</td></tr>
+<tr><td>题库编辑</td><td>editor01@exam.local</td><td>Editor@2026</td><td>创建和编辑题目</td></tr>
+<tr><td>题库审核</td><td>reviewer01@exam.local</td><td>Review@2026</td><td>审核题目</td></tr>
+<tr><td>学员</td><td>stu001@student.exam.local</td><td>abcd2345</td><td>学员小明</td></tr>
+<tr><td>学员</td><td>stu002@student.exam.local</td><td>efgh6789</td><td>学员小红</td></tr>
+</tbody></table>
+<div class="warn"><b>安全提示</b>测试账号仅用于功能体验，正式使用前请务必修改默认密码或创建独立账号。</div>
+
+<!-- CH4: Student Guide -->
+<h2 class="ch">第四章　学员操作指南</h2>
+<p>学员登录后进入学员端，顶部导航栏提供以下功能入口：</p>
+<table class="d"><thead><tr><th>入口</th><th>功能说明</th></tr></thead><tbody>
+<tr><td>首页</td><td>查看学习概览、练习统计、考试动态</td></tr>
+<tr><td>理论练习</td><td>刷题练习，含单选题和判断题</td></tr>
+<tr><td>实操任务</td><td>动手操作练习，涵盖 7 种任务类型</td></tr>
+<tr><td>正式考试</td><td>参加正式认证考试</td></tr>
+<tr><td>成绩查询</td><td>查看历次考试成绩</td></tr>
+<tr><td>错题本</td><td>复习答错的题目</td></tr>
+<tr><td>帮助</td><td>使用帮助和常见问题</td></tr>
+</tbody></table>
+
+<h3>4.1 学员首页</h3>
+<ul>
+<li><strong>欢迎信息</strong>：显示学员姓名</li>
+<li><strong>练习统计</strong>：累计练习次数、正确率百分比</li>
+<li><strong>考试动态</strong>：当前可参加的考试列表及状态</li>
+<li><strong>快捷入口</strong>：一键跳转到练习或考试</li>
+</ul>
+
+<h3>4.2 理论练习</h3>
+<p><strong>操作路径：</strong>学员端 -> 理论练习</p>
+<h4>4.2.1 开始练习</h4>
+<ol>
+<li>进入理论练习页面，系统自动从练习题库中加载题目</li>
+<li>题型包括：<strong>单选题</strong>（四个选项 A/B/C/D）和<strong>判断题</strong>（对/错）</li>
+<li>每道题展示：题目内容、选项、难度等级</li>
+</ol>
+<h4>4.2.2 答题与反馈</h4>
+<table class="d"><thead><tr><th>答题结果</th><th>显示效果</th><th>说明</th></tr></thead><tbody>
+<tr><td>答对</td><td>绿色对勾图标 + "做对了！"文字</td><td>鼓励性反馈，增强信心</td></tr>
+<tr><td>答错</td><td>红色叉号图标 + "答错了，没关系" + 正确答案</td><td>温和提示，展示正确答案</td></tr>
+</tbody></table>
+<h4>4.2.3 练习流程</h4>
+<div class="flow"><span class="s">加载题目</span><span class="a">-></span><span class="s">阅读题干</span><span class="a">-></span><span class="s">选择答案</span><span class="a">-></span><span class="s">即时反馈</span><span class="a">-></span><span class="s">下一题</span></div>
+<h4>4.2.4 错题自动收录</h4>
+<p>答错的题目会自动加入"错题本"，记录错题次数。同一道题答对后，将不再出现在错题列表中。</p>
+
+<h3>4.3 实操任务（7 种题型）</h3>
+<p><strong>操作路径：</strong>学员端 -> 实操任务</p>
+<p>实操任务模拟真实的人工智能训练师工作场景，包含以下 7 种任务类型：</p>
+<table class="d"><thead><tr><th>任务类型</th><th>操作说明</th><th>考核技能</th></tr></thead><tbody>
+<tr><td>Excel 删除行</td><td>查看数据表格，找出需要删除的异常行并标记</td><td>数据清洗、表格操作</td></tr>
+<tr><td>统计表填写</td><td>根据源数据计算统计值并填入对应单元格</td><td>数据统计、计算能力</td></tr>
+<tr><td>文件分类</td><td>将文件按类型（图片/文档/音频等）拖拽归类</td><td>文件管理、分类判断</td></tr>
+<tr><td>图片清洗</td><td>从一组图片中选出不符合要求的样本（如模糊、遮挡）</td><td>图片质量判断</td></tr>
+<tr><td>图片标注</td><td>在图片中的目标对象上画框并标注类别</td><td>目标检测标注</td></tr>
+<tr><td>情感标注</td><td>阅读文本，判断情感倾向（正面/负面/中性）</td><td>文本理解、情感分析</td></tr>
+<tr><td>音频转写</td><td>播放音频，将听到的内容转写为文字</td><td>语音识别辅助、文字录入</td></tr>
+</tbody></table>
+<h4>4.3.1 通用操作流程</h4>
+<div class="flow"><span class="s">查看任务列表</span><span class="a">-></span><span class="s">点击"开始"</span><span class="a">-></span><span class="s">阅读任务目标</span><span class="a">-></span><span class="s">完成操作</span><span class="a">-></span><span class="s">点击"提交"</span><span class="a">-></span><span class="s">查看评分</span></div>
+<h4>4.3.2 任务界面布局</h4>
+<p>每个实操任务页面采用统一的"三段式"布局：</p>
+<ul>
+<li><strong>顶部</strong>：一句话任务目标说明（20px 加粗）</li>
+<li><strong>中部</strong>：大操作区，根据任务类型展示不同的交互界面</li>
+<li><strong>底部</strong>：固定的主操作栏，包含"提交"按钮</li>
+</ul>
+<div class="tip"><b>提示</b>实操任务页面专为零基础学员设计：大字号、大按钮、每步有反馈。建议先完成几道练习熟悉操作方式。</div>
+
+<h3>4.4 正式考试（完整流程）</h3>
+<p><strong>操作路径：</strong>学员端 -> 正式考试</p>
+<h4>4.4.1 考试完整流程</h4>
+<div class="flow"><span class="s">查看考试列表</span><span class="a">-></span><span class="s">进入考试</span><span class="a">-></span><span class="s">逐题作答</span><span class="a">-></span><span class="s">交卷</span><span class="a">-></span><span class="s">查看成绩</span></div>
+<h4>4.4.2 考试状态说明</h4>
+<table class="d"><thead><tr><th>状态</th><th>含义</th><th>可操作</th></tr></thead><tbody>
+<tr><td>未开始</td><td>当前时间早于考试开始时间</td><td>否</td></tr>
+<tr><td>进行中</td><td>当前时间在考试时间范围内</td><td>可点击"进入考试"</td></tr>
+<tr><td>已结束</td><td>当前时间晚于考试结束时间</td><td>否</td></tr>
+<tr><td>已完成</td><td>您已经提交了试卷</td><td>否</td></tr>
+</tbody></table>
+<h4>4.4.3 答题界面</h4>
+<ul>
+<li><strong>倒计时</strong>：页面顶部显示剩余时间，精确到秒</li>
+<li><strong>题目导航</strong>：可随时切换上一题/下一题，已答和未答有不同标记</li>
+<li><strong>交卷按钮</strong>：位于答题区底部，点击后确认提交</li>
+</ul>
+<div class="warn"><b>重要</b>倒计时结束后系统会<strong>自动交卷</strong>。请合理安排答题时间，优先完成有把握的题目。</div>
+<h4>4.4.4 考试规则</h4>
+<table class="d"><thead><tr><th>规则项</th><th>说明</th></tr></thead><tbody>
+<tr><td>迟到入场</td><td>考试开始后 <strong>15 分钟</strong>内仍可入场（管理员可调整）</td></tr>
+<tr><td>交卷宽限时间</td><td>考试结束后允许 <strong>5 分钟</strong>（300秒）宽限时间内交卷</td></tr>
+<tr><td>超时处理</td><td>超过宽限时间未交卷，判为"已超时"，按已提交答案评分</td></tr>
+<tr><td>及格线</td><td>默认 <strong>60 分</strong>（管理员可调整）</td></tr>
+<tr><td>答题次数</td><td>每位学员对每场考试仅有一次答题机会</td></tr>
+<tr><td>断网恢复</td><td>网络恢复后重新登录可继续答题，已答内容不丢失</td></tr>
+</tbody></table>
+
+<h3>4.5 成绩查询</h3>
+<p><strong>操作路径：</strong>学员端 -> 成绩查询</p>
+<ul>
+<li>显示所有已完成的考试记录</li>
+<li>每条记录包含：考试名称、总分、满分、是否通过、状态</li>
+<li>成绩发布后才能查看具体分数（管理员未发布前显示"等待发布"）</li>
+</ul>
+
+<h3>4.6 错题本</h3>
+<p><strong>操作路径：</strong>学员端 -> 错题本</p>
+<ul>
+<li>汇总所有理论练习中答错的题目</li>
+<li>显示每道题的错题次数，便于重点复习</li>
+<li>可重新作答错题，答对后自动移出错题列表</li>
+</ul>
+<div class="tip"><b>学习建议</b>建议在正式考试前，先过一遍错题本中的题目，重点复习高频错题。</div>
+
+<h3>4.7 帮助中心</h3>
+<p><strong>操作路径：</strong>学员端 -> 帮助</p>
+<ul>
+<li>常见问题解答</li>
+<li>各功能模块的操作指引</li>
+<li>联系管理员的方式说明</li>
+</ul>
+
+<!-- CH5: Teacher Guide -->
+<h2 class="ch">第五章　教师操作指南</h2>
+<p>教师登录后进入教师端，主要功能包括：仪表盘、考试管理、学员管理。</p>
+
+<h3>5.1 教师仪表盘</h3>
+<ul>
+<li><strong>班级概览</strong>：当前教师所带班级的学员总数、近期活跃情况</li>
+<li><strong>考试概览</strong>：已安排的考试列表、参与人数、平均分趋势</li>
+<li><strong>学习进度</strong>：学员练习次数、正确率排行</li>
+</ul>
+
+<h3>5.2 考试管理</h3>
+<h4>5.2.1 查看考试列表</h4>
+<ul>
+<li>显示所有已创建的考试安排</li>
+<li>每条记录包含：考试名称、所属试卷、考试时间、状态、参与人数</li>
+<li>可按状态筛选：未开始 / 进行中 / 已结束</li>
+</ul>
+<h4>5.2.2 创建考试</h4>
+<ol>
+<li>点击"创建考试"按钮</li>
+<li>填写考试名称、选择试卷、选择参加班级</li>
+<li>设置考试开始时间和结束时间、考试时长</li>
+<li>确认无误后提交</li>
+</ol>
+<div class="warn"><b>注意</b>考试开始时间一旦设定，需修改请提前通知学员。已开始的考试无法修改。</div>
+<h4>5.2.3 考试状态管理</h4>
+<table class="d"><thead><tr><th>操作</th><th>说明</th></tr></thead><tbody>
+<tr><td>提前结束</td><td>强制结束进行中的考试，所有未交卷学员自动交卷</td></tr>
+<tr><td>延长考试</td><td>延长考试结束时间（需在考试结束前操作）</td></tr>
+<tr><td>取消考试</td><td>取消未开始的考试安排</td></tr>
+</tbody></table>
+
+<h3>5.3 学员管理</h3>
+<ul>
+<li>查看本班学员列表：姓名、邮箱、注册时间</li>
+<li>查看学员练习统计：累计练习次数、正确率</li>
+<li>查看学员考试记录：历次考试分数、通过状态</li>
+</ul>
+
+<h3>5.4 教学建议</h3>
+<table class="d"><thead><tr><th>场景</th><th>建议操作</th></tr></thead><tbody>
+<tr><td>考前准备</td><td>提前 3 天创建考试安排，确认试卷题目覆盖教学范围</td></tr>
+<tr><td>练习跟进</td><td>每周查看学员练习正确率，针对低于 50% 的学员进行辅导</td></tr>
+<tr><td>考后分析</td><td>查看数据报表中的"薄弱题型"模块，针对性安排后续教学</td></tr>
+<tr><td>错题复习</td><td>考试前引导学员查看错题本，重点复习高频错题</td></tr>
+</tbody></table>
+
+<!-- CH6: Admin Guide -->
+<h2 class="ch">第六章　管理员操作指南</h2>
+<p>管理员（super_admin / school_admin）拥有最完整的系统管理权限。管理端采用侧边导航 + 内容区的布局。</p>
+
+<h3>6.1 管理首页与数据概览</h3>
+<ul>
+<li>练习题库总数、考试题库总数</li>
+<li>学员总数、教师总数、班级总数</li>
+<li>最近导入的题目记录</li>
+</ul>
+
+<h3>6.2 用户管理（含角色权限矩阵）</h3>
+<h4>6.2.1 查看用户列表</h4>
+<ul><li>显示所有用户：姓名、邮箱、角色、所属组织、创建时间</li><li>支持搜索和角色筛选</li></ul>
+<h4>6.2.2 角色权限矩阵</h4>
+<table class="d"><thead><tr><th>功能模块</th><th>学员</th><th>教师</th><th>题库编辑</th><th>题库审核</th><th>监考员</th><th>学校管理员</th><th>超管</th></tr></thead><tbody>
+<tr><td>理论练习</td><td style="text-align:center;">&#10003;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>实操任务</td><td style="text-align:center;">&#10003;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>正式考试</td><td style="text-align:center;">&#10003;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>成绩查询</td><td style="text-align:center;">&#10003;</td><td style="text-align:center;">&#10003;</td><td></td><td></td><td></td><td style="text-align:center;">&#10003;</td><td style="text-align:center;">&#10003;</td></tr>
+<tr><td>创建考试</td><td></td><td style="text-align:center;">&#10003;</td><td></td><td></td><td></td><td style="text-align:center;">&#10003;</td><td style="text-align:center;">&#10003;</td></tr>
+<tr><td>题目创建</td><td></td><td></td><td style="text-align:center;">&#10003;</td><td></td><td></td><td style="text-align:center;">&#10003;</td><td style="text-align:center;">&#10003;</td></tr>
+<tr><td>题目审核</td><td></td><td></td><td></td><td style="text-align:center;">&#10003;</td><td></td><td style="text-align:center;">&#10003;</td><td style="text-align:center;">&#10003;</td></tr>
+<tr><td>考试监控</td><td></td><td></td><td></td><td></td><td style="text-align:center;">&#10003;</td><td style="text-align:center;">&#10003;</td><td style="text-align:center;">&#10003;</td></tr>
+<tr><td>用户管理</td><td></td><td></td><td></td><td></td><td></td><td style="text-align:center;">&#10003;</td><td style="text-align:center;">&#10003;</td></tr>
+<tr><td>系统设置</td><td></td><td></td><td></td><td></td><td></td><td></td><td style="text-align:center;">&#10003;</td></tr>
+<tr><td>审计日志</td><td></td><td></td><td></td><td></td><td></td><td></td><td style="text-align:center;">&#10003;</td></tr>
+</tbody></table>
+
+<h3>6.3 组织与班级管理</h3>
+<h4>6.3.1 组织管理</h4>
+<ul><li>查看所有培训学校/机构列表：名称、编码、联系人、状态、班级数、学员数</li><li>可创建新组织（需填写名称、编码）</li></ul>
+<h4>6.3.2 班级管理</h4>
+<ul><li>查看所有班级列表：班级名称、所属组织、学员人数</li><li>可创建新班级（需选择所属组织、填写班级名称）</li></ul>
+
+<h3>6.4 考试安排</h3>
+<h4>创建考试安排步骤：</h4>
+<ol>
+<li>点击"创建考试安排"</li>
+<li>填写考试标题，选择试卷和参加班级（可多选）</li>
+<li>设置考试开始时间、结束时间、考试时长</li>
+<li>提交创建</li>
+</ol>
+<table class="d"><thead><tr><th>参数</th><th>说明</th><th>默认值</th></tr></thead><tbody>
+<tr><td>迟到入场时间</td><td>考试开始后允许入场的时间窗口</td><td>15 分钟</td></tr>
+<tr><td>交卷宽限时间</td><td>考试结束后允许交卷的时间</td><td>300 秒</td></tr>
+<tr><td>及格线</td><td>判定通过的最低分数</td><td>60 分</td></tr>
+</tbody></table>
+
+<h3>6.5 试卷管理</h3>
+<ul><li>查看所有试卷：名称、题目数量、总分、创建时间</li><li>创建试卷：填写名称，从题库选择题目，设置每题分值</li></ul>
+
+<h3>6.6 成绩管理与复核流程</h3>
+<h4>6.6.1 成绩状态流转</h4>
+<div class="flow"><span class="s">自动评分</span><span class="a">-></span><span class="s">人工复核</span><span class="a">-></span><span class="s">发布成绩</span></div>
+<table class="d"><thead><tr><th>状态</th><th>含义</th><th>可操作</th></tr></thead><tbody>
+<tr><td>自动评分</td><td>系统已完成评分，等待复核</td><td>可进入复核</td></tr>
+<tr><td>已复核</td><td>管理员已确认/调整分数</td><td>可发布</td></tr>
+<tr><td>已发布</td><td>成绩已对学员可见</td><td>不可修改</td></tr>
+</tbody></table>
+<h4>6.6.2 成绩复核操作</h4>
+<ol><li>在成绩列表中点击"复核"按钮</li><li>查看每道题的作答详情和评分结果</li><li>如需调整分数，输入调整后的分数</li><li>标记通过/不通过，填写复核备注</li><li>确认提交</li></ol>
+<h4>6.6.3 批量发布成绩</h4>
+<ol><li>在成绩列表中勾选需要发布的学生</li><li>点击"批量发布"按钮</li><li>确认发布（发布后学员端可见成绩）</li></ol>
+<div class="warn"><b>注意</b>成绩发布后无法撤回。请确保所有复核工作已完成后再发布。</div>
+
+<h3>6.7 考试实时监控</h3>
+<ul><li>实时查看进行中考试的参与状态</li><li>每场考试显示：参加人数、已交卷人数、进行中人数</li><li>学员状态：未入场 / 答题中 / 已交卷 / 已超时</li></ul>
+
+<h3>6.8 数据报表与分析</h3>
+<table class="d"><thead><tr><th>看板</th><th>展示内容</th></tr></thead><tbody>
+<tr><td>成绩分布</td><td>按分数段（90-100/80-89/70-79/60-69/60以下）统计人数</td></tr>
+<tr><td>考试通过率</td><td>每场考试的总参加人数、通过人数、通过率、平均分</td></tr>
+<tr><td>班级对比</td><td>各班级的平均分和通过率横向对比</td></tr>
+<tr><td>薄弱题型</td><td>错题最多的题目类型，辅助教学改进</td></tr>
+<tr><td>近期活动</td><td>最新的用户操作记录（练习、考试等）</td></tr>
+<tr><td>总体统计</td><td>考试场次、答题总次数、通过人数、平均分</td></tr>
+</tbody></table>
+
+<h3>6.9 系统设置（参数说明）</h3>
+<p><strong>操作路径：</strong>管理端 -> 系统设置（仅超级管理员可用）</p>
+<table class="d"><thead><tr><th>参数名称</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td>考试交卷宽限时间（秒）</td><td>300</td><td>考试结束后允许继续交卷的秒数</td></tr>
+<tr><td>考试迟到入场时间（分钟）</td><td>15</td><td>考试开始后允许入场的分钟数</td></tr>
+<tr><td>考试及格线（分）</td><td>60</td><td>考试通过的最低分数</td></tr>
+<tr><td>练习模式显示答案</td><td>是</td><td>练习时是否立即显示正确答案</td></tr>
+<tr><td>练习最大尝试次数</td><td>3</td><td>每道练习题最多可尝试次数（0=不限）</td></tr>
+<tr><td>密码最小长度</td><td>8</td><td>用户密码的最小长度要求</td></tr>
+<tr><td>自动登出时间（分钟）</td><td>120</td><td>无操作后自动登出的分钟数</td></tr>
+</tbody></table>
+
+<h3>6.10 审计日志</h3>
+<ul><li>记录系统中所有关键操作：登录、创建/修改/删除、发布成绩等</li><li>每条日志含：操作人、角色、操作类型、操作对象、详情、时间</li><li>支持按操作类型、角色、关键词筛选和分页</li></ul>
+<table class="d"><thead><tr><th>操作类型</th><th>记录说明</th></tr></thead><tbody>
+<tr><td>login</td><td>用户登录</td></tr>
+<tr><td>create_schedule</td><td>创建考试安排</td></tr>
+<tr><td>create_paper</td><td>创建试卷</td></tr>
+<tr><td>import</td><td>导入题库</td></tr>
+<tr><td>start_exam</td><td>开始考试</td></tr>
+<tr><td>submit_exam</td><td>提交考试</td></tr>
+<tr><td>publish_results</td><td>发布成绩</td></tr>
+</tbody></table>
+
+<h3>6.11 媒体素材工坊</h3>
+<p><strong>操作路径：</strong>管理端 -> 媒体工坊（仅超级管理员可用）</p>
+<h4>AI 图片生成</h4>
+<ol><li>输入图片描述（Prompt），如"一张模糊的猫的图片"</li><li>点击"生成图片"，等待 AI 处理（10-30 秒）</li><li>生成完成后可预览和下载，可用于图片清洗/标注类题目</li></ol>
+<h4>TTS 音频生成</h4>
+<ol><li>输入需要合成语音的文字内容</li><li>选择语音类型，点击"生成音频"</li><li>生成完成后可在线播放和下载，可用于音频转写类题目</li></ol>
+
+<h3>6.12 题库管理</h3>
+<ul><li>练习题库与考试题库分开管理</li><li>支持 DOCX 格式批量导入题目</li><li>题目审核流程：编辑创建 -> 提交审核 -> 审核通过/驳回</li><li>题目类型：单选题、判断题</li></ul>
+
+<!-- CH7: Security -->
+<h2 class="ch">第七章　安全与合规</h2>
+<h3>7.1 数据安全</h3>
+<table class="d"><thead><tr><th>安全措施</th><th>说明</th></tr></thead><tbody>
+<tr><td>数据库行级安全</td><td>PostgreSQL RLS 策略确保用户只能访问自己权限范围内的数据</td></tr>
+<tr><td>JWT Token 认证</td><td>所有 API 请求需携带有效 Token，过期自动失效</td></tr>
+<tr><td>密码加密存储</td><td>用户密码通过 bcrypt 算法加密，管理员无法查看明文</td></tr>
+<tr><td>HTTPS 传输加密</td><td>所有网络通信通过 HTTPS 加密传输</td></tr>
+<tr><td>审计日志</td><td>所有关键操作留有审计记录，可追溯</td></tr>
+</tbody></table>
+
+<h3>7.2 考试防作弊机制</h3>
+<table class="d"><thead><tr><th>机制</th><th>说明</th></tr></thead><tbody>
+<tr><td>答案不预加载</td><td>考试题目接口不返回正确答案（answer_key），防止前端泄露</td></tr>
+<tr><td>服务端时间锁</td><td>开始考试和交卷均在服务端校验时间，客户端篡改无效</td></tr>
+<tr><td>唯一尝试记录</td><td>每位学员对每场考试仅允许一次答题尝试</td></tr>
+<tr><td>服务端评分</td><td>所有评分在服务端完成，客户端无法篡改成绩</td></tr>
+<tr><td>超时自动提交</td><td>超过宽限时间后自动按已答内容评分</td></tr>
+</tbody></table>
+
+<h3>7.3 用户隐私保护</h3>
+<ul><li>系统仅收集必要的用户信息（姓名、邮箱、角色）</li><li>不记录学员的浏览器历史、本地文件等隐私数据</li><li>学员练习和考试数据仅用于教学评估，不会对外共享</li><li>管理员操作记录审计日志，防止权限滥用</li></ul>
+
+<!-- CH8: FAQ -->
+<h2 class="ch">第八章　故障排查与常见问题</h2>
+<h3>Q1: 登录提示"邮箱或密码错误"怎么办？</h3>
+<p>请检查邮箱地址是否正确（注意大小写），密码是否正确。如忘记密码，请联系系统管理员重置。</p>
+
+<h3>Q2: 考试时突然断网了，答题内容会丢失吗？</h3>
+<p>不会。系统支持断网恢复。网络恢复后重新登录进入考试，之前已答的题目会保留。系统会在服务端记录您的答题时间，不会因断网而判超时。</p>
+
+<h3>Q3: 倒计时结束后我还没答完怎么办？</h3>
+<p>系统会在倒计时结束后自动交卷，按您已完成的答题内容进行评分。建议合理安排时间，优先答有把握的题目。</p>
+
+<h3>Q4: 成绩显示"等待发布"，什么时候能看到分数？</h3>
+<p>管理员需要对成绩进行复核后才能发布。发布后您会在成绩查询页面看到具体分数。一般复核需 1-3 个工作日。</p>
+
+<h3>Q5: 同一道考试题可以重考吗？</h3>
+<p>每位学员对每场考试仅有一次答题机会。如因特殊原因需要补考，请联系教师或管理员重新安排。</p>
+
+<h3>Q6: 页面打开是空白或显示异常怎么办？</h3>
+<ol><li>清除浏览器缓存（Ctrl+Shift+Delete）</li><li>关闭浏览器后重新打开</li><li>尝试使用无痕/隐私模式访问</li><li>更换浏览器（推荐 Chrome 或 Edge）</li><li>如仍有问题，请联系管理员并提供截图</li></ol>
+
+<h3>Q7: 系统支持手机使用吗？</h3>
+<p>手机端可查看首页、成绩和进度。实操考试请在 PC 上进行，以保证最佳操作体验。</p>
+
+<h3>Q8: 如何批量导入题目？</h3>
+<p>管理员可通过 DOCX 格式批量导入题目。请按系统要求的模板格式编写文档，在题库管理 -> 导入题库页面上传。每道题需包含题干、选项、正确答案和知识点标签。</p>
+
+<h3>Q9: 考试迟到了还能进入吗？</h3>
+<p>在考试开始后的迟到入场时间内（默认 15 分钟）仍可进入考试。超过该时间将无法入场。具体时间以管理员设置为准。</p>
+
+<h3>Q10: 管理员如何发布成绩？</h3>
+<ol><li>进入管理端 -> 成绩管理</li><li>复核完所有学员成绩</li><li>勾选需要发布的学员记录</li><li>点击"批量发布"按钮</li><li>确认发布（注意：发布后不可撤回）</li></ol>
+
+<h3>其他常见故障</h3>
+<table class="d"><thead><tr><th>问题</th><th>可能原因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>页面一直加载中</td><td>网络不稳定或服务器响应慢</td><td>刷新页面（F5），等待 1-2 分钟重试</td></tr>
+<tr><td>按钮点击无反应</td><td>JavaScript 未完全加载</td><td>刷新页面后重试</td></tr>
+<tr><td>图片/音频无法播放</td><td>浏览器不支持或网络慢</td><td>等待加载完成，或刷新页面</td></tr>
+<tr><td>"您没有权限访问"</td><td>使用了不匹配角色的账号</td><td>确认账号角色，使用正确的入口登录</td></tr>
+</tbody></table>
+
+<!-- CH9: Appendix -->
+<h2 class="ch">第九章　附录</h2>
+<h3>9.1 术语表</h3>
+<table class="d"><thead><tr><th>术语</th><th>说明</th></tr></thead><tbody>
+<tr><td>RLS</td><td>Row Level Security，PostgreSQL 行级安全策略，确保用户只能访问有权限的数据</td></tr>
+<tr><td>JWT</td><td>JSON Web Token，用于身份认证的安全令牌</td></tr>
+<tr><td>App Router</td><td>Next.js 的现代路由系统，基于文件系统的路由方式</td></tr>
+<tr><td>shadcn/ui</td><td>基于 Radix UI 的无障碍 React 组件库</td></tr>
+<tr><td>TTS</td><td>Text-To-Speech，文字转语音技术</td></tr>
+<tr><td>Supabase</td><td>基于 PostgreSQL 的开源后端即服务平台</td></tr>
+<tr><td>Tailwind CSS</td><td>原子化 CSS 框架，提供灵活的样式工具</td></tr>
+<tr><td>成绩复核</td><td>管理员检查系统自动评分结果并确认或调整的过程</td></tr>
+<tr><td>迟到达场</td><td>考试开始后仍允许进入考试的时间窗口</td></tr>
+<tr><td>交卷宽限时间</td><td>考试结束后允许学员提交试卷的额外时间</td></tr>
+</tbody></table>
+
+<h3>9.2 版本历史</h3>
+<table class="d"><thead><tr><th>版本</th><th>日期</th><th>变更说明</th></tr></thead><tbody>
+<tr><td>1.0</td><td>2026-07</td><td>初版发布。包含完整学员练习/考试、教师管理、管理员后台、数据报表、系统设置、审计日志、媒体工坊等全部功能模块</td></tr>
+</tbody></table>
+
+<div class="endmark">— 全文完 —</div>
+</body></html>
