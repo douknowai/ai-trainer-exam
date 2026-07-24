@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- 独立运行的 CommonJS 手册生成脚本 */
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
