@@ -83,6 +83,7 @@ pnpm run build        # 生产构建
 - **dbQuery\<T\>(sql, ...params)**: 返回 `T[]`（展开参数，非数组）
 - **dbExec(sql, ...params)**: 返回 `number`（rowCount）
 - 题库读用 `question_items` VIEW（UNION practice + exam），写操作路由到实际表
+- **题库同源是有意设计**（2026-07-26 豆哥确认）：驾考科目一模式——题库公开、考试题从练习库抽取（`copyToExamBank`），学员刷题备考是设计目标。练习接口显示答案、练习与考试题干一致均**不是缺陷**，审查时不要再报
 - `SessionUser.roles` 是数组（非 `.role` 单值）
 - `profiles.id` 即用户 ID（无 `user_id` 列）
 - `enrollments.user_id`（非 `student_id`）
