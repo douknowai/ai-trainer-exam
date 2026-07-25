@@ -104,8 +104,9 @@ pnpm run build        # 生产构建
 
 ### 评分引擎
 
-- 12 个纯函数评分器: singleChoice, trueFalse, excelDeleteRows, statsTableFill, fileClassification, imageCleaning, imageAnnotation, textSentiment, audioTranscription, dataComparison, labelConsistency, modelEvaluation
-- 统一入口: `gradeByType(type, submission, answerKey)`
+- 15 个纯函数评分器（src/server/grading/index.ts 注册表）: single_choice, true_false, excel_delete_rows, stats_table, file_classify, image_clean, image_annotation, point_annotation, polyline_annotation, polygon_annotation, text_sentiment, audio_transcription, data_labeling, dataset_quality, composite_task
+- 任务类型 → 评分器映射 `TASK_GRADER_MAP`（14 种, bounding_box 复用 image_annotation）
+- 统一入口: `gradeByType(graderId, submission, answerKey)`（理论题）/ `gradeTaskByType(taskType, ...)`（实操题）
 
 ### API 端点清单
 
