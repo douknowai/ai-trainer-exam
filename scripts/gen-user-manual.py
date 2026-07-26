@@ -218,18 +218,21 @@ add_bullet(doc, '系统根据您的角色自动跳转到对应首页（学员/�
 
 add_heading(doc, '2.2  测试账号', level=2)
 add_body(doc, '系统预置了以下测试账号供培训与验收使用：')
+add_body(doc, '以下为开发测试阶段的账号密码，正式上线前请务必修改：', bold=True, color=ACCENT)
 add_table(doc,
-    ['角色', '邮箱', '密码', '说明'],
+    ['角色', '邮箱', '密码', '权限说明'],
     [
-        ['超级管理员', 'admin@exam.local', '随机生成（见部署日志）', '拥有全部权限'],
-        ['学校管理员', 'school@exam.local', '随机生成', '管理本校事务'],
-        ['教师', 'teacher01@exam.local', '随机生成', '查看班级与成绩'],
-        ['学员', 'stu001@student.exam.local', 'abcd2345', '练习与考试'],
-        ['学员', 'stu002@student.exam.local', 'efgh6789', '练习与考试'],
+        ['超级管理员', 'admin@exam.local', 'Admin@2026', '拥有全部权限，可管理所有模块'],
+        ['学校管理员', 'school@exam.local', 'School@2026', '管理本校事务（用户/题库/考务/成绩）'],
+        ['教师', 'teacher01@exam.local', 'Teacher@2026', '查看所辖班级学员进度与成绩'],
+        ['监考员', 'invig01@exam.local', 'Invig@2026', '考试监控与成绩查看'],
+        ['审计员', 'auditor01@exam.local', 'Audit@2026', '查看审计日志与报表'],
         ['题库编辑', 'editor01@exam.local', 'Editor@2026', '编辑练习/考试题库'],
-        ['题库审核', 'reviewer01@exam.local', 'Review@2026', '审核题目质量'],
+        ['题库审核', 'reviewer01@exam.local', 'Review@2026', '审核待发布题目'],
+        ['学员 001', 'stu001@student.exam.local', 'abcd2345', '练习与考试（主测试账号）'],
+        ['学员 002', 'stu002@student.exam.local', 'efgh6789', '练习与考试（辅助测试账号）'],
     ],
-    col_widths=[2.8, 5.5, 4, 3.5])
+    col_widths=[2.8, 5.5, 3.2, 4])
 
 add_heading(doc, '2.3  密码安全', level=2)
 add_bullet(doc, '首次部署后请立即修改管理员密码')

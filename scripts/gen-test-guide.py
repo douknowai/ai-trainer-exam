@@ -197,13 +197,15 @@ add_body(doc, '使用以下账号登录，按角色分层测试：')
 add_table(doc,
     ['角色', '邮箱', '密码', '测试用途'],
     [
-        ['学员 001', 'stu001@student.exam.local', 'abcd2345', '主测试账号（练习+考试）'],
-        ['学员 002', 'stu002@student.exam.local', 'efgh6789', '辅助账号（多学员场景）'],
-        ['教师', 'teacher01@exam.local', '随机生成', '教师端功能测试'],
-        ['学校管理员', 'school@exam.local', '随机生成', '管理端功能测试'],
-        ['超级管理员', 'admin@exam.local', '随机生成', '全部权限测试'],
+        ['超级管理员', 'admin@exam.local', 'Admin@2026', '全部权限测试'],
+        ['学校管理员', 'school@exam.local', 'School@2026', '管理端功能测试'],
+        ['教师', 'teacher01@exam.local', 'Teacher@2026', '教师端功能测试'],
+        ['监考员', 'invig01@exam.local', 'Invig@2026', '考试监控测试'],
+        ['审计员', 'auditor01@exam.local', 'Audit@2026', '审计日志测试'],
         ['题库编辑', 'editor01@exam.local', 'Editor@2026', '题库编辑测试'],
         ['题库审核', 'reviewer01@exam.local', 'Review@2026', '题目审核测试'],
+        ['学员 001', 'stu001@student.exam.local', 'abcd2345', '主测试账号（练习+考试）'],
+        ['学员 002', 'stu002@student.exam.local', 'efgh6789', '辅助账号（多学员场景）'],
     ],
     col_widths=[2.5, 5, 3.5, 4])
 
