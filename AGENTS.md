@@ -83,6 +83,7 @@ pnpm run build        # 生产构建
 - **dbQuery\<T\>(sql, ...params)**: 返回 `T[]`（展开参数，非数组）
 - **dbExec(sql, ...params)**: 返回 `number`（rowCount）
 - 题库读用 `question_items` VIEW（UNION practice + exam），写操作路由到实际表
+- **题库同源是有意设计**（2026-07-26 豆哥确认）：驾考科目一模式——题库公开、考试题从练习库抽取（`copyToExamBank`），学员刷题备考是设计目标。练习接口显示答案、练习与考试题干一致均**不是缺陷**，审查时不要再报
 - `SessionUser.roles` 是数组（非 `.role` 单值）
 - `profiles.id` 即用户 ID（无 `user_id` 列）
 - `enrollments.user_id`（非 `student_id`）
@@ -103,8 +104,9 @@ pnpm run build        # 生产构建
 
 ### 评分引擎
 
-- 12 个纯函数评分器: singleChoice, trueFalse, excelDeleteRows, statsTableFill, fileClassification, imageCleaning, imageAnnotation, textSentiment, audioTranscription, dataComparison, labelConsistency, modelEvaluation
-- 统一入口: `gradeByType(type, submission, answerKey)`
+- 15 个纯函数评分器（src/server/grading/index.ts 注册表）: single_choice, true_false, excel_delete_rows, stats_table, file_classify, image_clean, image_annotation, point_annotation, polyline_annotation, polygon_annotation, text_sentiment, audio_transcription, data_labeling, dataset_quality, composite_task
+- 任务类型 → 评分器映射 `TASK_GRADER_MAP`（14 种, bounding_box 复用 image_annotation）
+- 统一入口: `gradeByType(graderId, submission, answerKey)`（理论题）/ `gradeTaskByType(taskType, ...)`（实操题）
 
 ### API 端点清单
 
@@ -174,9 +176,9 @@ pnpm run build        # 生产构建
 
 | 角色 | 邮箱 | 密码 |
 |------|------|------|
-| 超级管理员 | admin@exam.local | Admin@2026 |
-| 学校管理员 | school@exam.local | School@2026 |
-| 教师 | teacher01@exam.local | Teacher@2026 |
+| 超级管理员 | admin@exam.local | 首次运行随机生成 |
+| 学校管理员 | school@exam.local | 首次运行随机生成 |
+| 教师 | teacher01@exam.local | 首次运行随机生成 |
 | 学员 | stu001@student.exam.local | abcd2345 |
 | 学员 | stu002@student.exam.local | efgh6789 |
 | 题库编辑 | editor01@exam.local | Editor@2026 |

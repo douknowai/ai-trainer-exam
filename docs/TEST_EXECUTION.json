@@ -1,0 +1,46 @@
+{
+  "executedAt": "2026-07-24",
+  "environment": {
+    "node": "22.16.0",
+    "network": "npm registry unavailable",
+    "nodeModulesIncluded": false
+  },
+  "checks": {
+    "typescriptSyntax": {
+      "files": 177,
+      "errors": 0,
+      "status": "passed"
+    },
+    "localImportResolution": {
+      "files": 177,
+      "errors": 0,
+      "status": "passed"
+    },
+    "navigationRouteResolution": {
+      "references": 42,
+      "errors": 0,
+      "status": "passed"
+    },
+    "offlineProductionGate": {
+      "passed": 11,
+      "failed": 0,
+      "status": "passed"
+    },
+    "gradingRuntimeSmoke": {
+      "passed": 7,
+      "failed": 0,
+      "status": "passed"
+    }
+  },
+  "notExecuted": [
+    "pnpm install --frozen-lockfile",
+    "pnpm ts-check",
+    "pnpm lint:build",
+    "pnpm lint:style",
+    "pnpm test",
+    "pnpm build",
+    "Supabase migration against a live project",
+    "S3 and media providers integration",
+    "browser E2E and concurrency test"
+  ]
+}

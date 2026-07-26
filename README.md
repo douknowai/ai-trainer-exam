@@ -1,225 +1,102 @@
-# 人工智能训练师五级零基础练习与考试系统
+# 人工智能训练师五级练习与考试系统
 
-面向职业培训学校零基础学员的练习与考试一体化平台。服务三类角色：**零基础学员**、**教师**、**超级管理员**，覆盖理论练习、实操任务、在线考试、自动阅卷、成绩管理与数据报表全流程。
+面向职业培训学校、失业人员、高校毕业生及其他零基础社会学员的完整 Web 培训考试系统。练习库与正式考试库物理分离，覆盖理论题与 13 种实操题型，全部使用确定性评分器自动判分（正式成绩不依赖任何 LLM/网络/随机数）。
 
-> 设计意象：培训教室里的护眼绿黑板 + 干净白色练习册 + 老师的大字板书。耐心、稳重、可信赖。
+## 当前版本
 
----
+`1.0.0-rc.2`。已经过多轮全角色层深度审核与自动化回归（API 安全、评分正确性、越权、事务、信息泄露、强制改密）。正式上线前仍需在目标环境执行完整安装、迁移、构建与并发验收，详见 `docs/TEST_REPORT.md`。
 
-## 目录
+## 核心能力
 
-- [功能概览](#功能概览)
-- [技术栈](#技术栈)
-- [项目结构](#项目结构)
-- [快速开始](#快速开始)
-- [环境变量](#环境变量)
-- [测试账号](#测试账号)
-- [核心设计](#核心设计)
-- [开发命令](#开发命令)
-- [文档索引](#文档索引)
-- [许可协议](#许可协议)
-
----
-
-## 功能概览
-
-### 学员端
-
-| 模块 | 说明 |
-|------|------|
-| 理论练习 | 按题型/知识点练习，即时判分，温和鼓励反馈 |
-| 实操任务 | 数据清洗、图片标注、文本情感、音频转写等 12 类实操任务 |
-| 错题本 | 自动收录错题，支持重做 |
-| 在线考试 | 服务端时间锁、自动倒计时交卷、超时自动判 expired |
-| 成绩查询 | 历次成绩与通过状态 |
-
-### 教师端
-
-| 模块 | 说明 |
-|------|------|
-| 仪表盘 | 班级概况与关键指标 |
-| 考试管理 | 创建/管理考试安排 |
-| 学员管理 | 查看班级学员列表与进度 |
-
-### 管理端
-
-| 模块 | 说明 |
-|------|------|
-| 系统统计 | 用户/组织/考试全局概览 |
-| 用户管理 | 角色分配与账号管理 |
-| 组织与班级 | 多层级组织 + 班级管理 |
-| 考试安排 | 排期与试卷绑定 |
-| 试卷管理 | 题目组卷 |
-| 成绩管理 | 列表查看、复核调分、成绩发布 |
-| 数据报表 | 成绩分布、通过率、班级对比、薄弱题型分析 |
-| 审计日志 | 全操作可追溯 |
-| AI 媒体生成 | 图片生成 / TTS 音频（用于实操题目素材） |
-| 系统设置 | 全局配置项管理 |
-
----
+- 零基础学员友好界面：大字号、少步骤、温和鼓励式反馈。
+- 理论题：单选、判断，即时练习与正式考试。
+- 实操题（练习与考试同构，13 种）：
+  - 数据清洗：Excel 删行、图片数据清洗、数据集质量体检
+  - 图片标注：矩形框（含属性）、点、折线、多边形
+  - 文本标注：情感标注、通用图文数据分类
+  - 其他：文件分类、音频转写（校验语气助词）、统计填表、综合任务
+- 考试安全：服务端时间权威、心跳、自动保存（含关页 keepalive 兜底）、断线续考、幂等交卷。
+- 组卷即冻结：题目快照、答案键、素材 checksum、评分器版本全部固化，改题库不影响已发试卷。
+- 多机构 RBAC（8 种角色）、职责分离（编辑不能审自己的题）、审计日志、成绩复核与发布门禁。
+- 账号安全：初始密码一次性展示、首次登录强制改密（服务端 428 门控 + 改密页闭环）、停用/启用、角色回收事务化。
 
 ## 技术栈
 
-| 分类 | 技术 |
-|------|------|
-| 框架 | Next.js 16 (App Router) |
-| 核心 | React 19 |
-| 语言 | TypeScript 5 (strict) |
-| UI 组件 | shadcn/ui (基于 Radix UI) |
-| 样式 | Tailwind CSS 4 |
-| 数据库 | Supabase PostgreSQL + RLS 行级安全 |
-| 认证 | Supabase Auth (email/password) |
-| 通知 | sonner |
+Next.js 16 (App Router) · React 19 · TypeScript 5 (strict) · Tailwind CSS 4 · shadcn/ui · Supabase (Postgres + Auth, RLS 全表 deny) · node-pg · Vitest · ExcelJS
 
----
-
-## 项目结构
-
-```
-├── public/                     # 静态资源
-├── scripts/                    # 构建/启动/校验脚本
-│   └── db/                     # 数据库种子与迁移脚本
-├── docs/                       # 项目文档（架构/数据模型/评分规范等）
-├── drizzle/                    # Drizzle ORM 数据库迁移文件
-├── src/
-│   ├── app/                    # 页面路由与布局
-│   │   ├── admin/              # 管理员端
-│   │   ├── api/                # API 路由 (auth/student/teacher/admin)
-│   │   ├── login/              # 登录页
-│   │   └── student/            # 学员端 (exams/practice/results/task/wrong)
-│   ├── components/             # 业务组件 + shadcn/ui 组件库
-│   ├── hooks/                  # 自定义 Hooks
-│   ├── lib/                    # 工具库 (api/session-client/utils)
-│   ├── server/                 # 服务端逻辑
-│   │   ├── auth.ts             # 认证与会话
-│   │   ├── audit.ts            # 审计日志
-│   │   ├── db.ts               # 数据库查询封装
-│   │   ├── docx-importer.ts    # DOCX 题库导入解析
-│   │   ├── grading/            # 12 个评分器 + gradeByType 统一入口
-│   │   └── question-bank.ts    # 题库 CRUD
-│   └── storage/                # 存储层 (Supabase 客户端)
-├── .coze                       # 部署配置（构建与启动命令，必须入库）
-├── AGENTS.md                   # AI 协作规范文件
-├── DESIGN.md                   # 设计规范文件
-└── README.md
-```
-
----
-
-## 快速开始
-
-### 前置要求
-
-- Node.js 24+
-- pnpm（包管理器）
-- Supabase 项目（需提供连接凭证）
-
-### 安装与启动
+## 本地启动
 
 ```bash
-# 安装依赖
-pnpm install
-
-# 启动开发服务器（默认端口 5000）
-pnpm run dev
+cp .env.example .env.local   # 填入 Supabase / PGDATABASE_URL 等配置
+pnpm install --frozen-lockfile
+pnpm db:migrate
+pnpm db:seed-core            # 生产环境必须先设 SEED_ADMIN_PASSWORD
+pnpm db:seed-questions       # 可选: 从 DOCX 导入理论题
+pnpm db:seed-tasks           # 实操题种子(练习库+考试库)
+pnpm dev                     # http://localhost:5000
 ```
 
-启动后在浏览器打开 `http://localhost:5000` 查看应用。开发服务器支持热更新。
+新建账号的初始密码由加密安全随机数生成，只在创建时输出一次，首次登录强制修改。仓库不包含固定默认密码。
 
-### 生产构建
+## 测试账号（种子环境）
 
-```bash
-pnpm run build    # 构建
-pnpm run start    # 启动生产服务器
-```
-
----
-
-## 环境变量
-
-所有密钥与连接凭证通过环境变量注入，**绝不硬编码入库**。项目启动时会自动从运行时环境读取：
-
-| 变量名 | 说明 |
-|--------|------|
-| `COZE_SUPABASE_URL` | Supabase 项目 URL |
-| `COZE_SUPABASE_ANON_KEY` | Supabase 匿名密钥 |
-| `COZE_SUPABASE_SERVICE_ROLE_KEY` | Supabase 服务端密钥（绕过 RLS） |
-| `DEPLOY_RUN_PORT` | 服务监听端口（默认 5000） |
-
-> 本地开发时可将变量写入 `.env.local`（已被 `.gitignore` 忽略，不会入库）。
-
----
-
-## 测试账号
-
-| 角色 | 邮箱 | 密码 |
+| 角色 | 邮箱 | 说明 |
 |------|------|------|
-| 超级管理员 | admin@exam.local | Admin@2026 |
-| 学校管理员 | school@exam.local | School@2026 |
-| 教师 | teacher01@exam.local | Teacher@2026 |
-| 学员 | stu001@student.exam.local | abcd2345 |
-| 学员 | stu002@student.exam.local | efgh6789 |
-| 题库编辑 | editor01@exam.local | Editor@2026 |
-| 题库审核 | reviewer01@exam.local | Review@2026 |
+| 学员 | `stu001@student.exam.local` / `stu002@student.exam.local` | 密码见种子输出 |
+| 超级管理员 | `admin@exam.local` | 密码为首次运行 `seed-core` 时输出（或 `SEED_ADMIN_PASSWORD`） |
+| 学校管理员 | `school@exam.local` | 同上 |
+| 教师 / 编辑 / 审核 / 监考 / 审计 | `teacher01` / `editor01` / `reviewer01` / `invig01` / `auditor01@exam.local` | 同上 |
 
----
-
-## 核心设计
-
-### 评分引擎
-
-采用 12 个纯函数确定性评分器，统一入口 `gradeByType(type, submission, answerKey)`：
-
-```
-singleChoice · trueFalse · excelDeleteRows · statsTableFill · fileClassification
-imageCleaning · imageAnnotation · textSentiment · audioTranscription
-dataComparison · labelConsistency · modelEvaluation
-```
-
-### 考试时间锁
-
-- 开始考试时服务端校验 `exam_start_at <= NOW()`
-- 交卷时服务端校验 `NOW() <= exam_end_at`，超时自动判为 `expired`
-- 客户端倒计时到期自动提交
-
-### 数据安全
-
-- Supabase RLS 行级安全策略
-- 所有敏感操作记录审计日志
-- 密钥通过环境变量注入，不入库
-
----
-
-## 开发命令
+## 质量检查与回归验证
 
 ```bash
-pnpm install          # 安装依赖
-pnpm run dev          # 启动开发服务器
-pnpm run build        # 生产构建
-pnpm run start        # 启动生产服务器
-pnpm ts-check         # TypeScript 类型检查
-pnpm lint --quiet     # ESLint 检查
+pnpm ts-check          # TypeScript 严格检查
+pnpm lint:build        # ESLint
+pnpm test              # 评分器单元测试(Vitest)
+pnpm validate          # 完整质量门禁(含构建)
+
+# 端到端回归矩阵(需 dev server 运行在 5000 端口, 连真实数据库)
+pnpm tsx scripts/db/verify-api.mts         # 管理/教师端 45 例: 权限/越权/用户生命周期/强制改密门控/导出
+pnpm tsx scripts/db/verify-student.mts     # 学员端 19 例: 练习闭环/考试入口/防刷分/信息泄露探针
+pnpm tsx scripts/db/verify-tasks.mts       # 题库契约 32 例: 满分提交必须满分/空卷不得分
+pnpm tsx scripts/db/verify-exam-flow.mts   # 交卷全链路 21 例: 组卷→开考→交卷→DB 层核验, 自动清理
 ```
 
----
+验证脚本在共享数据库上遵循严格纪律：临时数据自动清理，真实业务数据零污染。
 
-## 文档索引
+## 目录结构
 
-| 文档 | 说明 |
-|------|------|
-| [AGENTS.md](AGENTS.md) | AI 协作规范（API 清单、编码约定、数据库约定） |
-| [DESIGN.md](DESIGN.md) | 设计规范（配色、字体、交互、设计禁忌） |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 系统架构设计 |
-| [docs/DATA_MODEL.md](docs/DATA_MODEL.md) | 数据模型设计 |
-| [docs/GRADING_SPEC.md](docs/GRADING_SPEC.md) | 确定性评分引擎规范 |
-| [docs/QUESTION_BANK_GUIDE.md](docs/QUESTION_BANK_GUIDE.md) | 题库建设与导入规范 |
-| [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) | 项目计划与里程碑 |
-| [docs/DECISIONS.md](docs/DECISIONS.md) | 工程决策记录 |
-| [docs/STATUS.md](docs/STATUS.md) | 项目状态（持续更新） |
-| [docs/USER_MANUAL.md](docs/USER_MANUAL.md) | 用户使用说明书 |
+```text
+src/app/                    页面(学员/教师/管理/登录/改密)与 API 路由
+src/components/             业务组件(exam-task-input 实操作答组件库)与 shadcn/ui
+src/lib/                    apiFetch(带 auth/428 跳改密)/constants/api 助手
+src/server/                 认证/DB/审计/题库/用户管理/考试安全
+src/server/grading/         确定性评分引擎(15 个评分器)
+src/server/media/           图片/音频 Provider 适配器
+src/storage/                Supabase 客户端(service role, 仅服务端)
+drizzle/                    数据库迁移
+scripts/db/                 迁移/种子/回归验证脚本(_env.mjs 公共环境加载)
+public/training/            演示素材(SVG/AI 生成图/TTS 音频)
+docs/                       架构/部署/安全/评分规范/用户手册/测试报告
+.github/workflows/          CI 质量门禁
+```
 
----
+## 关键安全原则
 
-## 许可协议
+- 正式考试不读取练习库，不存在回退抽题。
+- 客户端不能决定评分器、答案键、分值或及格线。
+- 正式评分不调用 LLM、ASR 或图像识别模型。
+- 试卷快照在组卷时冻结，考试进行中不下发答案与解析。
+- 成绩在管理员发布前对学员不可见（学员端三重门禁）。
+- service-role 数据库操作必须附带机构范围校验；RLS 对 anon/authenticated 全表拒绝。
+- 强制改密由服务端 428 门控保证，不依赖前端自觉。
 
-本项目为内部教学使用，未设开源许可。
+## 文档
+
+- `docs/ARCHITECTURE.md` — 架构与数据流
+- `docs/DEPLOYMENT.md` — 部署手册
+- `docs/SECURITY.md` — 安全设计
+- `docs/GRADING_SPEC.md` — 评分器规范
+- `docs/QUESTION_BANK_GUIDE.md` — 题库管理指南
+- `docs/USER_MANUAL_STUDENT.md` / `docs/USER_MANUAL_ADMIN.md` — 用户手册
+- `docs/TEST_REPORT.md` — 测试报告

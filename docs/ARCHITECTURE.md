@@ -1,86 +1,39 @@
-# ARCHITECTURE.md — 系统架构
+# 系统架构
 
-## 总体架构
+## 1. 边界
+
+系统由学员端、教师端、管理端、Next.js BFF、PostgreSQL、Supabase Auth、S3 对象存储和媒体 Provider 组成。浏览器不持有 service-role、S3 密钥、正式答案或评分阈值。
 
 ```text
-学员端 / 教师端 / 管理端 (Next.js App Router, React 19, Tailwind 4, shadcn/ui)
-  -> API Routes (服务端, Zod 校验, RBAC 鉴权)
-    -> Supabase Auth + PostgreSQL (RLS 行级安全)
-    -> S3 对象存储 (object_key 持久化, 签名 URL 动态生成)
-    -> 确定性评分引擎 (src/server/graders, 纯函数, 版本化)
-    -> 媒体生成适配器 (src/server/media)
-       -> image2-api 技能 (python scripts) — 未配置时 Mock
-       -> mimo-lecture-audio-skill (python scripts) — 未配置时 Mock
-    -> LLMClient (仅 AI 辅助扩题/练习错题解释, 不参与正式评分)
+Browser
+  -> Next.js API / Server routes
+      -> Supabase Auth
+      -> PostgreSQL (business + audit + frozen exam snapshots)
+      -> S3-compatible object storage
+      -> deterministic grading engine
+      -> image2-api / mimo-lecture-audio-skill / Coze fallback (authoring only)
 ```
 
-## 目录结构
+## 2. 题库物理隔离
 
-```
-src/
-├── app/                          # 页面路由
-│   ├── (auth)/login/             # 登录
-│   ├── student/                  # 学员端
-│   ├── teacher/                  # 教师端
-│   ├── admin/                    # 管理端
-│   └── api/                      # API Routes
-│       ├── practice/             # 练习库 API (独立)
-│       ├── exam/                 # 考试库 API (独立, 不下发答案)
-│       ├── admin/                # 管理 API
-│       ├── media/                # 媒体工坊 API
-│       └── grading/              # 评分 API
-├── components/                   # UI 组件 (shadcn/ui + 业务组件)
-│   ├── workbench/                # 实操工作区组件
-│   └── ui/                       # shadcn 基础组件
-├── lib/                          # 共享工具
-└── server/                       # 服务端专属 (禁止前端导入)
-    ├── auth/                     # 会话与角色解析
-    ├── db/                       # Supabase 客户端 + 数据访问层
-    ├── graders/                  # 确定性评分引擎 (12 个评分器)
-    ├── media/                    # 媒体技能适配器
-    ├── storage/                  # S3 封装
-    ├── audit/                    # 审计日志
-    └── import/                   # DOCX 导入器
-```
+练习和考试分别使用 `practice_question_items` / `exam_question_items` 与 `practice_task_templates` / `exam_task_templates`。正式组卷只接受已发布、允许正式考试、非 `practice_only` 且同机构的考试库内容。组卷时复制题干、配置、答案键、评分器、评分器版本和素材 checksum 到 `exam_paper_items`。
 
-## 关键架构决策
+## 3. 考试状态
 
-### 1. 练习库与考试库完全分离
-- 独立数据表：`practice_question_items` / `exam_question_items`（及 task/asset/paper 系列）
-- 独立 API 前缀：`/api/practice/*` / `/api/exam/*`
-- 独立 S3 前缀：`practice/` / `exam/`
-- 练习→考试复制走"发布为考试题"流程，生成全新 ID 与版本
-- 考试库 API 响应中**绝不包含** answer_key / grading 阈值 / 标准标注
+考试安排由草稿进入发布，再根据时间进入考试阶段，结束后完成评分和成绩发布。状态转换由服务端白名单控制。学员 attempt 使用 `in_progress -> grading -> graded -> released`，交卷在单个数据库事务中执行，并使用行锁和提交哈希实现幂等。
 
-### 2. 服务端时间权威
-- 所有时间判断（练习锁定、考试开关、交卷）以 `exam_schedules` + 数据库当前时间为准
-- 前端倒计时仅显示，每次心跳由服务端校准
-- `GET /api/exam/schedule/[id]/status` 返回服务端时间与状态机状态
+## 4. 自动保存与恢复
 
-### 3. 确定性评分
-- 12 个评分器均为纯函数 `(submission, answerKey, config) => GradingResult`
-- 每个评分器有 `engine_version`；评分结果连同版本入库
-- 同一提交 + 同一版本 ⇒ 分数恒定（有回归单测保证）
-- LLM 不参与正式评分
+学员答案通过 `/api/student/exams/save` 增量保存，心跳更新最后在线时间。页面加载时从服务端恢复已保存答案，倒计时使用 `server_deadline`，刷新页面不会重置考试时长。
 
-### 4. 虚拟文件工作区
-- 文件分类/删除在浏览器内虚拟工作区完成（React 状态模拟 Windows 资源管理器最小子集）
-- 不使用 File System Access API 作为核心方案
+## 5. 评分
 
-### 5. 媒体素材冻结
-- 素材生命周期：generated → reviewing → approved → published(冻结, checksum)
-- 发布后不可原位覆盖，只能产生新 asset_version
-- 正式考试运行期零实时生成调用
+评分器位于 `src/server/grading/index.ts`，只接收服务器冻结的答案键。所有评分器返回 0—1 比例，业务层乘以试卷项目分值。正式成绩保存项目分、模块分、总分、评分详情、评分器版本、试卷版本和提交哈希。
 
-## 安全模型
+## 6. 多租户
 
-- 前端无密钥；`coze-coding-dev-sdk`、service_role、S3 客户端仅在 `src/server/**`
-- RLS：学员只见自己的数据；教师限授权班级；答案相关表仅 service_role 可读
-- 所有写操作 API 先做 Zod 校验 + 角色校验 + 审计日志
-- 成绩人工调整必须带 reason，记录 original/adjusted/final
+业务表以 `organization_id` 隔离。service-role 会绕过数据库 RLS，因此 API 同时执行对象级机构校验。教师通过 `teacher_cohort_grants` 访问授权班级；学员只能访问自己的报名、attempt、响应和成绩。
 
-## 性能与限制（来自环境审计）
+## 7. 媒体
 
-- 沙箱 4C/8G/10G 无 GPU → 不跑本地推理
-- Supabase 免费版 500MB → 大对象全部走 S3，DB 只存 key 与元数据
-- 不承诺未压测的高并发；交付时附实测结果与已知限制
+媒体生成只用于内容生产，不参与考试实时评分。素材流程为：生成 → 存入对象存储 → 计算 SHA-256 → 人工审核 → 发布冻结 → 关联考试题。考试开始后不实时调用媒体模型。
