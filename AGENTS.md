@@ -22,7 +22,8 @@
 ├── scripts/db/                 # 数据库种子脚本
 │   ├── seed-core.mts           # 组织/班级/用户种子
 │   ├── seed-questions.mts      # 题库导入脚本
-│   └── seed-tasks.mts          # 实操任务模板种子
+│   ├── seed-tasks.mts          # 实操任务模板种子
+│   └── seed-questions-batch.mts # 理论题批量种子（30+题, practice+exam 双写）
 ├── src/
 │   ├── app/                    # 页面路由与布局
 │   │   ├── admin/              # 管理员端
@@ -107,6 +108,11 @@ pnpm run build        # 生产构建
 - 15 个纯函数评分器（src/server/grading/index.ts 注册表）: single_choice, true_false, excel_delete_rows, stats_table, file_classify, image_clean, image_annotation, point_annotation, polyline_annotation, polygon_annotation, text_sentiment, audio_transcription, data_labeling, dataset_quality, composite_task
 - 任务类型 → 评分器映射 `TASK_GRADER_MAP`（14 种, bounding_box 复用 image_annotation）
 - 统一入口: `gradeByType(graderId, submission, answerKey)`（理论题）/ `gradeTaskByType(taskType, ...)`（实操题）
+- 三种标注评分器机制（均只接收 `(submission, answerKey)` 参数，标准答案和图片地址存储在数据库 config/answer_key 字段）:
+  - **方框标注 image_annotation**: IoU 重叠度算法，默认阈值 **45%**，支持类别 + 属性匹配（v2.1.0）
+  - **折线标注 polyline_annotation**: 双向 Chamfer 距离，默认阈值 **8% 图片尺寸**，等距重采样（64 点）消除点密度差异（v2.0.0）
+  - **轮廓标注 polygon_annotation**: 网格栅格化多边形 IoU（80×80 采样），默认阈值 **40%**（v2.0.0）
+  - 换图片换坐标只需更新数据库 answer_key，评分逻辑无需修改
 
 ### API 端点清单
 
