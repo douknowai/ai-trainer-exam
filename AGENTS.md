@@ -149,6 +149,8 @@ pnpm run build        # 生产构建
 - `POST /api/admin/cohorts/import-roster` - 名册导入(Excel解析+批量注册学员+关联班级)
 - `POST /api/admin/cohorts/parse-roster` - 名册预览解析(不写库)
 - `GET /api/admin/cohorts/[id]/students` - 班级学员列表
+- `POST /api/admin/cohorts/[id]/reset-passwords` - 批量重置班级学员密码为身份证后六位
+- `DELETE /api/admin/cohorts/[id]` - 删除班级(软删除, 学员账号保留)
 - `GET/POST /api/admin/exam-schedules` - 考试安排
 - `GET/POST/PUT/PATCH /api/admin/task-templates` - 实操任务模板(列表/创建/PUT更新answer_key/PATCH上下架)
 - `GET/POST /api/admin/papers` - 试卷管理(手动组卷)
