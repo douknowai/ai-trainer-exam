@@ -192,7 +192,9 @@ pnpm run build        # 生产构建
 | 超级管理员 | admin@exam.local | 首次运行随机生成 |
 | 学校管理员 | school@exam.local | 首次运行随机生成 |
 | 教师 | teacher01@exam.local | 首次运行随机生成 |
-| 学员 | stu001@student.exam.local | abcd2345 |
-| 学员 | stu002@student.exam.local | efgh6789 |
-| 题库编辑 | editor01@exam.local | Editor@2026 |
-| 题库审核 | reviewer01@exam.local | Review@2026 |
+| 学员 | stu001@student.exam.local | 首次运行随机生成 |
+| 学员 | stu002@student.exam.local | 首次运行随机生成 |
+| 题库编辑 | editor01@exam.local | 首次运行随机生成 |
+| 题库审核 | reviewer01@exam.local | 首次运行随机生成 |
+
+> 密码由 `seed-core` 脚本生成并输出到控制台。验证脚本通过 `.env.local` 中的 `VERIFY_*_PASSWORD` 环境变量读取，不在源码中硬编码。

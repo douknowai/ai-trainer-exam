@@ -7,21 +7,13 @@
  * 用法: pnpm tsx scripts/db/verify-api.mts  (需要 dev server 运行在 5000 端口)
  */
 import { loadEnv } from 'coze-coding-dev-sdk';
+import { getAllAccounts } from './_accounts.mjs';
 
 loadEnv();
 
 const BASE = process.env.VERIFY_BASE_URL || 'http://localhost:5000';
 
-const ACCOUNTS: Record<string, { email: string; password: string }> = {
-  admin: { email: 'admin@exam.local', password: 'Admin@2026' },
-  school: { email: 'school@exam.local', password: 'School@2026' },
-  teacher: { email: 'teacher01@exam.local', password: 'Teacher@2026' },
-  editor: { email: 'editor01@exam.local', password: 'Editor@2026' },
-  reviewer: { email: 'reviewer01@exam.local', password: 'Review@2026' },
-  invigilator: { email: 'invig01@exam.local', password: 'Invig@2026' },
-  auditor: { email: 'auditor01@exam.local', password: 'Audit@2026' },
-  student: { email: 'stu001@student.exam.local', password: 'abcd2345' },
-};
+const ACCOUNTS: Record<string, { email: string; password: string }> = getAllAccounts();
 
 const tokens: Record<string, string> = {};
 let passed = 0;

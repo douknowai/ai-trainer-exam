@@ -88,8 +88,10 @@
 | 角色 | 邮箱 | 密码 |
 |------|------|------|
 | 超级管理员 | admin@exam.local | 首次运行随机生成 |
-| 学员 | stu001@student.exam.local | abcd2345 |
-| 学员 | stu002@student.exam.local | abcd2345 |
+| 学员 | stu001@student.exam.local | 首次运行随机生成 |
+| 学员 | stu002@student.exam.local | 首次运行随机生成 |
+
+> 所有账号密码由 `seed-core` 脚本在初始化时生成并输出到控制台，首次登录强制修改。
 
 > 教师、题库编辑、题库审核等角色账号请向管理员申请创建。
 

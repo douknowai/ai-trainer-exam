@@ -280,6 +280,8 @@ pnpm tsx scripts/db/verify-exam-flow.mts   # 交卷全链路 21 例
 
 验证脚本在共享数据库上遵循严格纪律：临时数据自动清理，真实业务数据零污染。
 
+> 验证脚本通过 `scripts/db/_accounts.mjs` 从 `.env.local` 中的 `VERIFY_*_PASSWORD` 环境变量读取测试账号密码，不在源码中硬编码。运行前请先执行 `seed-core` 获取密码，并填入 `.env.local`。
+
 ## 部署
 
 ### 生产构建
@@ -325,9 +327,15 @@ quality-gate → ts-check → lint:build → lint:style → test → build
 | [`docs/USER_MANUAL_ADMIN.md`](docs/USER_MANUAL_ADMIN.md) | 管理员使用手册 |
 | [`docs/TEST_REPORT.md`](docs/TEST_REPORT.md) | 测试报告 |
 | [`DESIGN.md`](DESIGN.md) | UI/UX 设计规范 |
+| [`AGENTS.md`](AGENTS.md) | AI 开发助手规范 |
+
+## 贡献
+
+1. Fork 本仓库
+2. 创建功能分支 (`git checkout -b feat/your-feature`)
+3. 提交变更前运行 `pnpm validate` 确保全部通过
+4. 提交 Pull Request，CI 会自动执行质量门禁
 
 ## 开源协议
 
-[Apache License 2.0](LICENSE)
-
-[Apache License 2.0](LICENSE)
+[MIT](LICENSE)
