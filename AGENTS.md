@@ -149,7 +149,9 @@ pnpm run build        # 生产构建
 - `POST /api/admin/cohorts/parse-roster` - 名册预览解析(不写库)
 - `GET /api/admin/cohorts/[id]/students` - 班级学员列表
 - `GET/POST /api/admin/exam-schedules` - 考试安排
-- `GET/POST /api/admin/papers` - 试卷管理
+- `GET/POST/PUT/PATCH /api/admin/task-templates` - 实操任务模板(列表/创建/PUT更新answer_key/PATCH上下架)
+- `GET/POST /api/admin/papers` - 试卷管理(手动组卷)
+- `GET/POST /api/admin/papers/auto-compose` - 一键智能组卷(随机抽题+自动均分, school_admin/super_admin)
 - `GET /api/admin/results` - 成绩列表
 - `GET/PATCH /api/admin/scores/review` - 成绩复核(查详情+调整)
 - `POST /api/admin/scores/publish` - 发布成绩
