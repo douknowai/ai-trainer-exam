@@ -105,8 +105,8 @@ pnpm run build        # 生产构建
 
 ### 评分引擎
 
-- 16 个纯函数评分器（src/server/grading/index.ts 注册表）: single_choice, true_false, fill_in_blank, excel_delete_rows, stats_table, file_classify, image_clean, image_annotation, point_annotation, polyline_annotation, polygon_annotation, text_sentiment, audio_transcription, data_labeling, dataset_quality, prompt_description, composite_task
-- 任务类型 → 评分器映射 `TASK_GRADER_MAP`（14 种, bounding_box 复用 image_annotation）
+- 17 个纯函数评分器（src/server/grading/index.ts 注册表）: single_choice, true_false, fill_in_blank, excel_delete_rows, stats_table, file_classify, image_clean, image_annotation, point_annotation, polyline_annotation, polygon_annotation, text_sentiment, audio_transcription, data_labeling, dataset_quality, prompt_description, composite_task, excel_comprehensive
+- 任务类型 → 评分器映射 `TASK_GRADER_MAP`（15 种, bounding_box 复用 image_annotation）
 - 统一入口: `gradeByType(graderId, submission, answerKey)`（理论题）/ `gradeTaskByType(taskType, ...)`（实操题）
 - 三种标注评分器机制（均只接收 `(submission, answerKey)` 参数，标准答案和图片地址存储在数据库 config/answer_key 字段）:
   - **方框标注 image_annotation**: IoU 重叠度算法，默认阈值 **45%**，支持类别 + 属性匹配（v2.1.0）
@@ -114,6 +114,7 @@ pnpm run build        # 生产构建
   - **轮廓标注 polygon_annotation**: 网格栅格化多边形 IoU（80×80 采样），默认阈值 **40%**（v2.0.0）
   - 换图片换坐标只需更新数据库 answer_key，评分逻辑无需修改
 - **提示词描述 prompt_description**: 学员根据图片素材撰写自然语言提示词，评分器按关键词命中率评分。answer_key 格式 `{ keywords: string[], referencePrompt?: string, passThreshold?: number }`，关键词支持 `|` 分隔同义词（如 `"猫|猫咪|小猫"`），默认通过阈值 **60%**。图片 URL 存储在 `options.image` 字段。
+- **Excel 综合操作 excel_comprehensive** (v1.0.0): 模拟真实 Excel 场景，学员需完成边框设置、公式求班级、排序、分类汇总、标题着色、小数格式等操作。config 格式 `{ columns, rowIds, dataRows, classColumnIndex, scoreColumnIndices, totalColumnIndex, colorOptions }`。answer_key 格式 `{ classColumnIndex, formulaResults: Record<rowId, string>, sortedRowOrder: string[], headerColor, decimalPlaces, summaryAverages: Array<{key, averages}>, numericTolerance? }`。6 项检查等权评分（v1.0.0）。
 
 ### API 端点清单
 
