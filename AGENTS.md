@@ -163,6 +163,7 @@ pnpm run build        # 生产构建
 - `GET/PATCH /api/admin/settings` - 系统设置(获取/更新配置项)
 - `POST /api/admin/seed-theory` - 一键导入初级理论考试题(100题, 清旧+写新, super_admin/school_admin)
 - `POST /api/admin/seed-prompt-questions` - 一键导入提示词描述题(5题, 跳过已存在, super_admin/school_admin)
+- `POST /api/admin/seed-excel-comprehensive` - 一键导入Excel综合操作题(1题, 跳过已存在, super_admin/school_admin)
 
 ### 考试时间锁
 
