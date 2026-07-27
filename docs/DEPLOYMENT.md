@@ -2,7 +2,7 @@
 
 ## 1. 环境
 
-推荐 Coze Vibe Coding / Next.js App Router，Node.js 22、pnpm 9、Supabase PostgreSQL 和 S3 兼容对象存储。复制 `.env.example` 并填入环境变量，密钥不得提交到仓库。
+推荐 Coze Vibe Coding / Next.js App Router，Node.js 22.13+、pnpm 11.17+、Supabase PostgreSQL 和 S3 兼容对象存储。复制 `.env.example` 并填入环境变量，密钥不得提交到仓库。
 
 ## 2. 安装与质量门禁
 
@@ -32,6 +32,8 @@ pnpm db:seed-questions -- /path/to/questions.docx
 ```
 
 导入内容进入 `imported_unreviewed`，必须人工审核后才能发布。法律法规题自动标记时效复核。
+
+学员名册仅接受 `.xlsx`，不再接受旧版 `.xls`；这样可以使用受维护的 ExcelJS 解析并避免无修复版本解析器带来的安全风险。
 
 ## 5. 媒体 Provider
 
