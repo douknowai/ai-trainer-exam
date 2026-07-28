@@ -90,7 +90,7 @@
 ### 环境要求
 
 - Node.js >= 22.13
-- pnpm >= 11.17（项目强制使用，`preinstall` 脚本会拦截 npm/yarn）
+- pnpm >= 9.0（项目强制使用，`preinstall` 脚本会拦截 npm/yarn）
 - PostgreSQL 数据库（推荐 Supabase）
 
 ### 安装与启动
@@ -303,7 +303,7 @@ pnpm build                   # 构建 Next.js 并打包 Node.js 22 服务端
 pnpm start                   # Ubuntu 生产模式启动，默认端口 5000
 ```
 
-生产环境要求 Ubuntu、Node.js 22.13+ 与 pnpm 11.17+。通过 `PORT` 或 `DEPLOY_RUN_PORT` 指定监听端口，密钥由部署平台环境变量或专用密钥管理服务注入。更完整的上线、回滚与验证流程见 [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)。
+生产环境要求 Ubuntu、Node.js 22.13+ 与 pnpm 9+。通过 `PORT` 或 `DEPLOY_RUN_PORT` 指定监听端口，密钥由部署平台环境变量或专用密钥管理服务注入。更完整的上线、回滚与验证流程见 [`docs/DELIVERY.md`](docs/DELIVERY.md)。
 
 ### CI/CD
 
@@ -319,22 +319,27 @@ quality-gate → ts-check → lint:build → lint:style → test → build
 
 | 角色 | 邮箱 | 密码 |
 |------|------|------|
-| 超级管理员 | `admin@exam.local` | 首次运行 `seed-core` 时输出（或设 `SEED_ADMIN_PASSWORD`） |
-| 学校管理员 | `school@exam.local` | 同上 |
-| 教师 | `teacher01@exam.local` | 同上 |
-| 学员 | `stu001@student.exam.local` | 见种子输出 |
-| 学员 | `stu002@student.exam.local` | 见种子输出 |
-| 题库编辑 | `editor01@exam.local` | 同上 |
-| 题库审核 | `reviewer01@exam.local` | 同上 |
+| 超级管理员 | `admin@exam.local` | `Admin@2026` |
+| 学校管理员 | `school@exam.local` | `School@2026` |
+| 教师 | `teacher01@exam.local` | `Teacher@2026` |
+| 学员 | `stu001@student.exam.local` | `abcd2345` |
+| 学员 | `stu002@student.exam.local` | `efgh6789` |
+| 题库编辑 | `editor01@exam.local` | `Editor@2026` |
+| 题库审核 | `reviewer01@exam.local` | `Review@2026` |
+
+> 以上为开发测试环境种子密码，生产环境部署后请立即通过系统设置修改。
 
 ## 文档索引
 
 | 文档 | 说明 |
 |------|------|
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | 架构与数据流 |
-| [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | 部署手册 |
-| [`docs/SECURITY.md`](docs/SECURITY.md) | 安全设计 |
+| [`docs/DELIVERY.md`](docs/DELIVERY.md) | 交付与部署指南 |
 | [`docs/GRADING_SPEC.md`](docs/GRADING_SPEC.md) | 评分器规范 |
+| `docs/人工智能训练师五级练习与考试系统-使用说明书.docx` | 用户使用手册（Word） |
+| `docs/人工智能训练师五级练习与考试系统-使用说明书.pdf` | 用户使用手册（PDF） |
+| `docs/测试评测指导文档.docx` | 测试用例与缺陷记录规范 |
+| `docs/测试记录文档.docx` | 测试执行记录模板 |
 | [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md) | 数据模型 |
 | [`docs/QUESTION_BANK_GUIDE.md`](docs/QUESTION_BANK_GUIDE.md) | 题库管理指南 |
 | [`docs/USER_MANUAL_STUDENT.md`](docs/USER_MANUAL_STUDENT.md) | 学员使用手册 |
